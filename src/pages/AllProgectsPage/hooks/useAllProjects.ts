@@ -8,6 +8,7 @@ export const useAllProjects = () => {
     queryKey: ['summary'],
     queryFn: async ():Promise<ProjectsResponse> => {
       const response = await apiInstance.get<ProjectsResponse>(`/boards`);
+      console.log(response.data)
       return response.data;
     }
   });

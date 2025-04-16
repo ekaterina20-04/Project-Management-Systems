@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Providers } from '@/app/providers';
-import { TasksPage } from '@/pages/TasksPage/TasksPage';
 import { ProjectPage } from '@/pages/ProjectPage/ProjectPage';
 import { AllProjectsPage } from '@/pages/AllProgectsPage/AllProgectsPage';
+import { TasksPage } from '@/pages/TasksPage/TasksPage';
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
         element: <TasksPage />,
       },
       {
-        path: 'board/:projectId',
+        path: 'board/:boardId',
         element: <ProjectPage />,
       },
       
