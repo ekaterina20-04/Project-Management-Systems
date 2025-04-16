@@ -1,6 +1,6 @@
 import { Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useAllProjects } from "./hooks/useAllProjects";
-import { summaryProject } from "@/enteties/summaryProjects";
+import { ProjectList } from "./ui/ProjectList";
 
 export const AllProjectsPage: React.FC = () => {
   const { data: projects, isLoading, error } = useAllProjects();
@@ -30,21 +30,7 @@ export const AllProjectsPage: React.FC = () => {
     <>
       <VStack w={"100%"} mt={5}>
         <Text textTransform={'uppercase'} fontSize={'xx-large'} mb={5}>Ваши проекты</Text>
-        {projects.data.map((project: summaryProject) => (
-          <Flex
-            key={project.id}
-            bg={"pink.100"}
-            w={"100%"}
-            p={5}
-            borderRadius={30}
-            mb={3}
-            cursor={'pointer'}
-          >
-            <Text ml={5} fontSize={"xl"}>
-              {project.name}
-            </Text>{" "}
-          </Flex>
-        ))}
+          <ProjectList data={projects.data||[]}/>
       </VStack>
     </>
   );
