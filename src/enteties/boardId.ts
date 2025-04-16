@@ -10,12 +10,13 @@ export interface SummaryBoardId {
 export interface BoardIdResponse {
   data: SummaryBoardId[];
 }
-interface Assignee {
+export interface Assignee {
   avatarUrl: string;
   email: string;
   fullName: string;
   id: number;
 }
 
-type Priority = "Low" | "Medium" | "High";
-type Status = "Backlog" | "In Progress" | "Done";
+export type Priority = "Low" | "Medium" | "High";
+export type Status = "Backlog" | "InProgress" | "Done";
+
