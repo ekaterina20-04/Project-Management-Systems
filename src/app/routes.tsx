@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Providers } from '@/app/providers';
 import { TasksPage } from '@/pages/TasksPage/TasksPage';
-import { AllProgectsPage } from '@/pages/AllProgectsPage/AllProgectsPage';
 import { ProjectPage } from '@/pages/ProjectPage/ProjectPage';
+import { AllProjectsPage } from '@/pages/AllProgectsPage/AllProgectsPage';
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <AllProgectsPage />,
+        element: <AllProjectsPage />,
       },
       {
         path: 'tasks',
