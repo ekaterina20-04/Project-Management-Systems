@@ -1,4 +1,4 @@
-import { BoardIdResponse } from "@/enteties/boardId";
+import { BoardIdResponse } from "@/enteties/Board";
 import { apiInstance } from "@/shared/api/apiConfig";
 import { useQuery } from "@tanstack/react-query";
 

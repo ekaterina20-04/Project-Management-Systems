@@ -1,15 +1,40 @@
 import { ProjectsResponse, summaryProject } from "@/enteties/summaryProjects";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { useAllProjects } from "../hooks/useAllProjects";
 
-export const ProjectList=({data}:ProjectsResponse) =>{
+export const ProjectList=() =>{
+  const { data:projects, isLoading, error } = useAllProjects();
+
   const navigate=useNavigate();
   const navigateToBorderId=(borderId:number)=>{
     navigate(`board/${borderId}`)
   }
+  
+  if (isLoading) {
+    return (
+      <VStack w={"100%"} justify="center" align="center">
+        <Spinner size="xl" />
+      </VStack>
+    );
+  }
+  if (error) {
+    return (
+      <VStack w={"100%"} justify="center" align="center">
+        <Text color="red.500">Ошибка загрузки проектов.</Text>
+      </VStack>
+    );
+  }
+  if (!projects) {
+    return (
+      <Flex justify="center" align="center" h="100vh">
+        <Text fontSize="xl">Проекты не найдены.</Text>
+      </Flex>
+    );
+  }
   return (
     <>
-    {data.map((project: summaryProject) => (
+    {(projects.data).map((project: summaryProject) => (
         <Flex
           key={project.id}
           bg={"pink.100"}

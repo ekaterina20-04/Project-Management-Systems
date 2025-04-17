@@ -1,4 +1,4 @@
-import { CreateTaskModal } from "@/widgets/CreateTaskModal/CreatetaskModal";
+import { CreateTaskModal } from "@/widgets/CreateTaskModal/CreateTaskModal";
 import { Button, Dialog, HStack, Portal, Text } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -37,7 +37,7 @@ export const Header: React.FC = () => {
           </Button>
         </Dialog.Trigger>
         <Portal >
-          <CreateTaskModal zIndex={8888}/>
+          <CreateTaskModal />
         </Portal>
       </Dialog.Root>
     </HStack>

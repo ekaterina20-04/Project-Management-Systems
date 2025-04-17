@@ -110,7 +110,6 @@ export const ProjectPage: React.FC = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   w="300px"
-                  bg="gray.100"
                   p={4}
                   borderRadius="lg"
                   align="stretch"

@@ -1,43 +1,51 @@
-
-
-import {  Status } from "@/enteties/Board";
+import  { FC } from "react";
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
-export const SelectStatus = () => {
-    const statusOptions: Status[] = ["Backlog", "InProgress", "Done"];
-    
-    const statusCollection = createListCollection({
-      items: statusOptions.map((status) => ({
-        value: status,
-        label: status,
-      })),
-    });
-    return(<Select.Root
-        collection={statusCollection}
-        size="sm"
-        width="310px"
-        zIndex={999}
-       
-      >
-        <Select.HiddenSelect />
-        <Select.Label></Select.Label>
-        <Select.Control>
-          <Select.Trigger>
-            <Select.ValueText placeholder="Выберите приоритет" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {statusCollection.items.map((status) => (
-                <Select.Item item={status} key={status.label}>
-                  {status.value}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>)}
+import { Status } from "@/enteties/Board";
+
+interface SelectStatusProps {
+  value: Status | "";
+  onChange: (value: Status) => void;
+}
+
+const OPTIONS: Status[] = ["Backlog", "InProgress", "Done"];
+
+export const SelectStatus: FC<SelectStatusProps> = ({ value, onChange }) => {
+  const collection = createListCollection({
+    items: OPTIONS.map((st) => ({ value: st, label: st })),
+  });
+
+  return (
+    <Select.Root
+      collection={collection}
+      value={value ? [value] : []}
+      onValueChange={({ value: arr }) => {
+        const first = arr[0] as Status | undefined;
+        if (first) onChange(first);
+      }}
+      size="sm"
+      width="310px"
+      zIndex={999}
+      mt={4}
+    >
+      <Select.HiddenSelect />
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Выберите статус" />
+        </Select.Trigger>
+        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
+      </Select.Control>
+      <Portal>
+        <Select.Positioner>
+          <Select.Content>
+            {collection.items.map((item) => (
+              <Select.Item key={item.value} item={item}>
+                {item.label}
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
+  );
+};

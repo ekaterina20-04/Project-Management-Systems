@@ -1,18 +1,27 @@
-import { Priority } from "@/enteties/Board";
+import  { FC } from "react";
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
-export const SelectPrioriety = () => {
-  const priorityOptions: Priority[] = ["Low", "Medium", "High"];
+import { Priority } from "@/enteties/Board";
 
-  const priorityCollection = createListCollection({
-    items: priorityOptions.map((priority) => ({
-      value: priority,
-      label: priority,
-    })),
+interface SelectPriorietyProps {
+  value: Priority | "";
+  onChange: (value: Priority) => void;
+}
+
+const OPTIONS: Priority[] = ["Low", "Medium", "High"];
+
+export const SelectPrioriety: FC<SelectPriorietyProps> = ({ value, onChange }) => {
+  const collection = createListCollection({
+    items: OPTIONS.map((pr) => ({ value: pr, label: pr })),
   });
 
   return (
     <Select.Root
-      collection={priorityCollection}
+      collection={collection}
+      value={value ? [value] : []}
+      onValueChange={({ value: arr }) => {
+        const first = arr[0] as Priority | undefined;
+        if (first) onChange(first);
+      }}
       size="sm"
       width="310px"
       zIndex={999}
@@ -21,18 +30,16 @@ export const SelectPrioriety = () => {
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText placeholder="Выберите статус" />
+          <Select.ValueText placeholder="Выберите приоритет" />
         </Select.Trigger>
-        <Select.IndicatorGroup>
-          <Select.Indicator />
-        </Select.IndicatorGroup>
+        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
       </Select.Control>
       <Portal>
         <Select.Positioner>
           <Select.Content>
-            {priorityCollection.items.map((priority) => (
-              <Select.Item key={priority.label} item={priority}>
-                {priority.value}
+            {collection.items.map((item) => (
+              <Select.Item key={item.value} item={item}>
+                {item.label}
                 <Select.ItemIndicator />
               </Select.Item>
             ))}

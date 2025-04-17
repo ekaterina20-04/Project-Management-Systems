@@ -1,4 +1,4 @@
-import { Status } from "@/enteties/boardId";
+import { Status } from "@/enteties/Board";
 import { apiInstance, queryClient } from "@/shared/api/apiConfig";
 import { useMutation } from "@tanstack/react-query";
 

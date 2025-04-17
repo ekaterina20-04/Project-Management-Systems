@@ -1,8 +1,8 @@
 import { Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useSummaryTasks } from "../hooks/useSummaryTasks";
-import { SummaryTask, TasksResponse } from "@/enteties/SummaryTasks";
+import { SummaryTask } from "@/enteties/SummaryTasks";
 
-export const AllTasksList=(data:TasksResponse) =>{
+export const AllTasksList=() =>{
     const { data: tasks, isLoading, error } = useSummaryTasks();
     if (isLoading) {
       return (

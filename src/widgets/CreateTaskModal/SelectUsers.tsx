@@ -1,44 +1,47 @@
+import  { FC } from "react";
+import { Portal, Select, createListCollection, Spinner } from "@chakra-ui/react";
 import { useGetUsers } from "@/features/useGetUsers";
-import { Portal, Select, createListCollection } from "@chakra-ui/react";
-import { useState } from "react";
 
-export const SelectUsers = () => {
-  const { data } = useGetUsers();
-  const [value, setValue] = useState<string[]>([]);
-  if (!data) return;
-  const users = data.data;
-  const usersCollection = createListCollection({
-    items: users.map((user) => ({
-      label: user.fullName,
-      value: user.fullName,
-    })),
+interface SelectUsersProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const SelectUsers: FC<SelectUsersProps> = ({ value, onChange }) => {
+  const { data, isLoading } = useGetUsers();
+  if (isLoading) return <Spinner size="sm" />;
+  if (!data) return null;
+
+  const collection = createListCollection({
+    items: data.data.map((u) => ({ value: String(u.id), label: u.fullName })),
   });
-  console.log("users", usersCollection.items);
+
   return (
     <Select.Root
-      collection={usersCollection}
+      collection={collection}
+      value={value ? [value] : []}
+      onValueChange={({ value: arr }) => {
+        const first = arr[0];
+        if (first) onChange(first);
+      }}
       size="sm"
       width="310px"
       zIndex={999}
-      value={value}
-      onValueChange={(e) => setValue(e.value)}
+      mt={4}
     >
       <Select.HiddenSelect />
-      <Select.Label></Select.Label>
       <Select.Control>
         <Select.Trigger>
           <Select.ValueText placeholder="Выберите исполнителя" />
         </Select.Trigger>
-        <Select.IndicatorGroup>
-          <Select.Indicator />
-        </Select.IndicatorGroup>
+        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
       </Select.Control>
       <Portal>
         <Select.Positioner>
           <Select.Content>
-            {usersCollection.items.map((user) => (
-              <Select.Item item={user} key={user.label}>
-                {user.value}
+            {collection.items.map((item) => (
+              <Select.Item key={item.value} item={item}>
+                {item.label}
                 <Select.ItemIndicator />
               </Select.Item>
             ))}
