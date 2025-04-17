@@ -8,8 +8,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { SelectedTaskModal } from "./SelectTaskModal";
-import { SelectUserChange } from "./SelectUserChange";
 import { SelectUsers } from "./SelectUsers";
+import { SelectPrioriety } from "./SelectPrioriety";
+import { SelectStatus } from "./SelectStatus";
 
 export const CreateTaskModal: React.FC = () => {
   return (
@@ -35,7 +36,8 @@ export const CreateTaskModal: React.FC = () => {
               <Input placeholder="Название задачи" w={"100%"} p={2} />
               <Input placeholder="Описание задачи" w={"100%"} p={2} mt={2} />
               <SelectedTaskModal />
-              <SelectUserChange />
+              <SelectPrioriety />
+              <SelectStatus/>
               <SelectUsers/>
             </VStack>
           </Dialog.Body>
