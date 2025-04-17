@@ -1,22 +1,17 @@
 import {
   Button,
   CloseButton,
-  createListCollection,
   Dialog,
   Flex,
   Input,
-  Portal,
-  Select,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { SelectedTaskModal } from "./SelectTaskModal";
-import { useAllProjects } from "@/pages/AllProgectsPage/hooks/useAllProjects";
 import { SelectUserChange } from "./SelectUserChange";
+import { SelectUsers } from "./SelectUsers";
 
 export const CreateTaskModal: React.FC = () => {
-  
-
   return (
     <>
       <Dialog.Backdrop zIndex={1} />
@@ -39,8 +34,9 @@ export const CreateTaskModal: React.FC = () => {
             <VStack justifyContent={"center"}>
               <Input placeholder="Название задачи" w={"100%"} p={2} />
               <Input placeholder="Описание задачи" w={"100%"} p={2} mt={2} />
-              <SelectedTaskModal/>
-              <SelectUserChange/>
+              <SelectedTaskModal />
+              <SelectUserChange />
+              <SelectUsers/>
             </VStack>
           </Dialog.Body>
           <Dialog.Footer pb={6}>

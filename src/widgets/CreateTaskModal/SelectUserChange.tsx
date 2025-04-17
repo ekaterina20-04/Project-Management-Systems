@@ -1,7 +1,5 @@
 import { Priority, Status } from "@/enteties/Board";
-import { useAllProjects } from "@/pages/AllProgectsPage/hooks/useAllProjects";
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
-import { useRef, useState } from "react";
 
 export const SelectUserChange = () => {
   const priorityOptions: Priority[] = ["Low", "Medium", "High"];
