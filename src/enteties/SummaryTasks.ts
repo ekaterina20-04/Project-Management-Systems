@@ -1,4 +1,4 @@
-import { Assignee, Priority, Status } from "./boardId";
+import { Assignee, Priority, Status } from "./Board";
 
 export interface SummaryTask {
     assignee: Assignee;

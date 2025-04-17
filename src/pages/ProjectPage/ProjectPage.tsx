@@ -8,11 +8,10 @@ import {
 import { useParams } from "react-router-dom";
 import { useAllProjects } from "../AllProgectsPage/hooks/useAllProjects";
 import { useSummaryTasksId } from "./hooks/useSummaryTasksId";
-import { BoardIdResponse, Status, SummaryBoardId } from "@/enteties/boardId";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+
 import { useState, useEffect } from "react";
 import { useUpdatingTaskStatus } from "./hooks/useUpdatingTaskStatus";
+import { Status, SummaryBoardId } from "@/enteties/Board";
 
 const STATUSES: Status[] = ["Backlog", "InProgress", "Done"];
 
