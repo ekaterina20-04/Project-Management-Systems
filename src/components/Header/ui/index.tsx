@@ -1,5 +1,5 @@
-import { CreateTaskModal } from "@/widgets/CreateTaskModal/CreateTaskModal";
-import { Button, Dialog, HStack, Portal, Text } from "@chakra-ui/react";
+import { TaskModal } from "@/widgets/TaskModal/TaskModal";
+import { Button, Dialog, HStack, Portal, Text, useDisclosure } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const Header: React.FC = () => {
@@ -11,8 +11,11 @@ export const Header: React.FC = () => {
   const navigateToProjects = () => {
     navigate(`/`);
   };
+  const { open, onOpen, onClose } = useDisclosure();
+
   const isTasksPage = location.pathname === "/tasks";
   const isProjectPage = location.pathname === "/";
+
   return (
     <HStack my={5} justifyContent={"space-between"} w={"100%"}>
       <HStack cursor={"pointer"} fontSize={"xl"} gap={10} fontWeight={500}>
@@ -37,7 +40,10 @@ export const Header: React.FC = () => {
           </Button>
         </Dialog.Trigger>
         <Portal >
-          <CreateTaskModal />
+          <TaskModal initialMode="create"
+        isOpen={open}
+        onClose={onClose}
+        />
         </Portal>
       </Dialog.Root>
     </HStack>

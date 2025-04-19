@@ -1,7 +1,7 @@
-import { Priority } from "./Board";
+import { Priority, Status } from "./Board";
 
 export interface TaskCreatePequest{
-    assigneeId: number,
+  assigneeId: number,
   boardId: number,
   description: string,
   priority: Priority,
@@ -9,4 +9,15 @@ export interface TaskCreatePequest{
 }
 export interface TaskCreateResponse{
     id:number
+}
+
+export interface TaskUpdatePequest{
+  assigneeId: number,
+status: Status,
+description: string,
+priority: Priority,
+title: string
+}
+export interface TaskUpdateResponse{
+  message:string
 }

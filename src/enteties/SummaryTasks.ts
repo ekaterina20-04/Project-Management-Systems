@@ -13,3 +13,13 @@ export interface SummaryTask {
 export interface TasksResponse{
     data: SummaryTask[]
 }
+export interface GetTaskResponse{
+    assignee: Assignee;
+    boardName: string;
+    description: string;
+    id: number;
+    priority: Priority;
+    status: Status;
+    title: string;
+  
+}
