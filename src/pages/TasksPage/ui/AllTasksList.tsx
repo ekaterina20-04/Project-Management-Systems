@@ -8,7 +8,6 @@ export const AllTasksList = () => {
   const { data: tasksResponse, isLoading, error } = useSummaryTasks();
   console.log("data", tasksResponse);
   const [selectedTask, setselectedTask] = useState<number | null>(null);
-  const tasks: SummaryTask[] = tasksResponse?.data ?? [];
 
   const handleOpen = (id: number) => {
     setselectedTask(id);
@@ -16,7 +15,7 @@ export const AllTasksList = () => {
   const handleClose = () => {
     setselectedTask(null);
   };
-  
+
   if (isLoading) {
     return (
       <VStack w={"100%"} justify="center" align="center">
@@ -31,16 +30,18 @@ export const AllTasksList = () => {
       </VStack>
     );
   }
-  if (tasks.length === 0) {
+  if (!tasksResponse) {
     return (
       <Flex justify="center" align="center" h="100vh">
         <Text fontSize="xl">Задачи не найдены.</Text>
       </Flex>
     );
   }
+  console.log('tasksresponse', tasksResponse);
+  
   return (
     <>
-      {tasks.map((task: SummaryTask) => (
+      {tasksResponse.data.map((task: SummaryTask) => (
         <Flex
           key={task.id}
           bg="pink.100"
@@ -49,7 +50,7 @@ export const AllTasksList = () => {
           borderRadius={30}
           cursor="pointer"
           onClick={() => handleOpen(task.id)}
-          w={'100%'}
+          w={"100%"}
         >
           <Text fontSize="xl">{task.title}</Text>
         </Flex>

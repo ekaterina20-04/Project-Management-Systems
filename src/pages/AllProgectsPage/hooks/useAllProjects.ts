@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useAllProjects = () => {
   return useQuery({
-    queryKey: ['summary'],
+    queryKey: ['summaryProjects'],
     queryFn: async ():Promise<ProjectsResponse> => {
       const response = await apiInstance.get<ProjectsResponse>(`/boards`);
       console.log(response.data)

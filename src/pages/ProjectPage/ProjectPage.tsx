@@ -1,10 +1,11 @@
-import { Box, Flex, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { Box, Dialog, Flex, Portal, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import {
   DragDropContext,
   Droppable,
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+
 import { useParams } from "react-router-dom";
 import { useAllProjects } from "../AllProgectsPage/hooks/useAllProjects";
 import { useSummaryTasksId } from "./hooks/useSummaryTasksId";
@@ -12,6 +13,7 @@ import { useSummaryTasksId } from "./hooks/useSummaryTasksId";
 import { useState, useEffect } from "react";
 import { useUpdatingTaskStatus } from "./hooks/useUpdatingTaskStatus";
 import { Status, SummaryBoardId } from "@/enteties/Board";
+import { TaskModal } from "@/widgets/TaskModal/TaskModal";
 
 const STATUSES: Status[] = ["Backlog", "InProgress", "Done"];
 
@@ -24,6 +26,14 @@ export const ProjectPage: React.FC = () => {
   const tasksQuery = useSummaryTasksId(boardId || "");
   const projectsQuery = useAllProjects();
 
+  const [selectedTask, setselectedTask] = useState<number | null>(null);
+
+  const handleOpen = (id: number) => {
+    setselectedTask(id);
+  };
+  const handleClose = () => {
+    setselectedTask(null);
+  };
   const [columns, setColumns] = useState<Record<Status, SummaryBoardId[]>>({
     Backlog: [],
     InProgress: [],
@@ -119,6 +129,7 @@ export const ProjectPage: React.FC = () => {
                     {status}
                   </Text>
                   {columns[status].map((task, index) => (
+                    
                     <Draggable
                       draggableId={task.id.toString()}
                       index={index}
@@ -133,6 +144,8 @@ export const ProjectPage: React.FC = () => {
                           p={4}
                           borderRadius="md"
                           boxShadow="md"
+                          onClick={() => handleOpen(task.id)}  // открываем модалку
+                          cursor={'pointer'}
                         >
                           <Text fontWeight="medium">{task.title}</Text>
                         </Box>
@@ -146,6 +159,24 @@ export const ProjectPage: React.FC = () => {
           ))}
         </Flex>
       </DragDropContext>
+      {selectedTask !== null && (
+        <Dialog.Root
+          key={selectedTask}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) handleClose();
+          }}        >
+          <Dialog.Trigger></Dialog.Trigger>
+          <Portal>
+            <TaskModal
+              initialMode="view"
+              taskId={selectedTask}
+              isOpen={selectedTask !== null}
+              onClose={handleClose}
+            />
+          </Portal>
+        </Dialog.Root>
+      )}
     </VStack>
   );
 };

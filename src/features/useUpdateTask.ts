@@ -9,18 +9,18 @@ export const useUpdateTask = () => {
     { taskId: number; data: TaskUpdatePequest }
   >({
     mutationFn: async ({ taskId, data }) => {
-      console.log("✔️ вызываю update с taskId =", taskId, "и data =", data);
 
       const response = await apiInstance.put<TaskUpdateResponse>(
         `/tasks/update/${taskId}`,
         data
       );
-      console.log(response.data);
       return response.data;
     },
     onSuccess: () => {
       console.log("успешно обновлена задача");
-      queryClient.invalidateQueries({ queryKey: ["updateTasksId"] });
+      queryClient.invalidateQueries({ queryKey: ["ListOfTasks"] });
+      queryClient.invalidateQueries({ queryKey: ['summaryTasksId'] });
+
     },
     onError: (error) => {
       console.error("Ошибка при обновлении задачи:", error);

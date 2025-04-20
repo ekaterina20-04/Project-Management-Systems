@@ -1,5 +1,4 @@
-import { Flex, Spinner, Text, VStack } from "@chakra-ui/react";
-import { useAllProjects } from "./hooks/useAllProjects";
+import {  Text, VStack } from "@chakra-ui/react";
 import { ProjectList } from "./ui/ProjectList";
 
 export const AllProjectsPage: React.FC = () => {

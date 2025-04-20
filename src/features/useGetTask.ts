@@ -18,8 +18,7 @@ export const useGetTask = (
   options?: GetTaskOptions
 ) => {
   return useQuery<GetTaskResponse, Error, GetTaskResponse, ['task', number?]>({
-    // мы жёстко задаём queryKey и queryFn,
-    // а остальные опции (например enabled) приходят в `options`
+    
     queryKey: ['task', taskId],
     queryFn: async () => {
       const  response  = await apiInstance.get<GetTaskResponse>(
@@ -27,8 +26,8 @@ export const useGetTask = (
       );
       return response.data;
     },
-    enabled: false,   // по‑умолчанию ничего не дергаем
-    ...options,       // сюда придёт { enabled: isOpen && !!taskId }
+    enabled: false,   
+    ...options,      
   });
 };
 
