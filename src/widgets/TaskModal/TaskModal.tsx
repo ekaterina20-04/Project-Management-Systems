@@ -18,7 +18,7 @@ import { useGetUsers } from "@/features/useGetUsers";
 import { useCreateTasks } from "@/features/useCreateTask";
 import { useEffect, useState } from "react";
 import { Priority, Status } from "@/enteties/Board";
-import { TaskCreatePequest } from "@/enteties/Task";
+import { TaskCreatePequest, TaskUpdatePequest } from "@/enteties/Task";
 import { useUpdateTask } from "@/features/useUpdateTask";
 import { useGetTask } from "@/features/useGetTask";
 interface TaskModalProps {
@@ -54,12 +54,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       resetForm();
     }
   }, [initialMode, isOpen]);
-  console.log('initialMode' , taskId)
+  console.log("initialMode", taskId);
   const isCreate = mode === "create";
   const isView = mode === "view";
   const isEdit = mode === "edit";
 
-  const { data, isLoading: loadingTask } = useGetTask(taskId!,{  enabled: typeof taskId === "number",
+  const { data, isLoading: loadingTask } = useGetTask(taskId!, {
+    enabled: typeof taskId === "number",
   });
   const { data: projectsResponse } = useAllProjects();
   const { data: usersResponse } = useGetUsers();
@@ -68,8 +69,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const projects = projectsResponse?.data ?? [];
   const users = usersResponse?.data ?? [];
 
-  const task=data?.data;
-  console.log(task,'task');
+  const task = data?.data;
+  console.log(task, "task");
 
   const [form, setForm] = useState<CreateFormState>({
     title: "",
@@ -122,17 +123,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       };
       await createTask.mutateAsync(payload);
     } else {
-      const payload = {
-        taskId: taskId!,
-        data: {
-          title: String(form.title),
-          description: String(form.description),
-          assigneeId: Number(form.assigneeId),
-          priority: form.priority as Priority,
-          status: form.status as Status,
-        },
+      const payload: TaskUpdatePequest = {
+        title: String(form.title),
+        description: String(form.description),
+        assigneeId: Number(form.assigneeId),
+        priority: form.priority as Priority,
+        status: form.status as Status,
       };
-      await updateTask.mutateAsync(payload);
+      await updateTask.mutateAsync({ taskId: taskId!, data: payload });
     }
     resetForm();
     onSuccess?.();
@@ -144,137 +142,135 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       {/* <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <Dialog.Trigger></Dialog.Trigger>
         <Portal> */}
-          <Dialog.Backdrop zIndex={1} />
-          <Dialog.Positioner
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            p={0}
-            zIndex={2}
-          >
-            <Dialog.Content w={400} p={0}>
-              <Dialog.Header>
-                <Dialog.Title>
-                  <Flex color={"black"} fontSize={"xl"} fontWeight={500}>
-                    <Text>
-                      {isCreate
-                        ? "Создать задачу"
-                        : isView
-                        ? "Информация о задаче"
-                        : "Редактирование задачи"}
-                    </Text>
-                  </Flex>
-                </Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body w={"90%"}>
-                {!isCreate && loadingTask ? (
-                  <Spinner />
-                ) : (
-                  <VStack justifyContent={"center"}>
-                    <>
-                       {isView ? (
-                        <Text>{form.title}</Text>
-                      ) : (
-                        <Input
-                          placeholder="Название задачи"
-                          w={"100%"}
-                          p={2}
-                          onChange={(e) =>
-                            handleChange("title")(e.target.value)
-                          }
-                        />
-                      )}
-                      {isView ? (
-                        <Text>{form.description}</Text>
-                      ) : (
-                        <Input
-                          placeholder="Описание задачи"
-                          w={"100%"}
-                          p={2}
-                          mt={2}
-                          onChange={(e) =>
-                            handleChange("description")(e.target.value)
-                          }
-                        />
-                      )} 
-                      {isView ? (
-                        <Text>
-                          {
-                            projects?.find((p) => p.id === Number(form.boardId))
-                              ?.name
-                          }
-                        </Text>
-                      ) : (
-                        <SelectedTaskModal
-                          value={form.boardId}
-                          onChange={(v) => handleChange("boardId")(v)}
-                        />
-                      )}
-                      {isView ? (
-                        <Text>{form.priority}</Text>
-                      ) : (
-                        <SelectPrioriety
-                          value={form.priority}
-                          onChange={(v) => handleChange("priority")(v)}
-                        />
-                      )}
-                      {isView ? (
-                        <Text>{form.status}</Text>
-                      ) : (
-                        <SelectStatus
-                          value={form.status}
-                          onChange={(v) => handleChange("status")(v)}
-                        />
-                      )}
-                      {isView ? (
-                        <Text>
-                          {" "}
-                          {
-                            users?.find((u) => u.id === Number(form.assigneeId))
-                              ?.fullName
-                          }
-                        </Text>
-                      ) : (
-                        <SelectUsers
-                          value={form.assigneeId}
-                          onChange={(v) => handleChange("assigneeId")(v)}
-                        />
-                      )} 
-                    </>
-                  </VStack>
-                )}
-              </Dialog.Body>
-              <Dialog.Footer pb={6}>
+      <Dialog.Backdrop zIndex={1} />
+      <Dialog.Positioner
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        p={0}
+        zIndex={2}
+      >
+        <Dialog.Content w={400} p={0}>
+          <Dialog.Header>
+            <Dialog.Title>
+              <Flex color={"black"} fontSize={"xl"} fontWeight={500}>
+                <Text>
+                  {isCreate
+                    ? "Создать задачу"
+                    : isView
+                    ? "Информация о задаче"
+                    : "Редактирование задачи"}
+                </Text>
+              </Flex>
+            </Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body w={"90%"}>
+            {!isCreate && loadingTask ? (
+              <Spinner />
+            ) : (
+              <VStack justifyContent={"center"}>
                 <>
-                  {isView && (
-                    <Button mr={3} onClick={() => setMode("edit")}>
-                      Редактировать
-                    </Button>
+                  {isView ? (
+                    <Text>Задача: {form.title}</Text>
+                  ) : (
+                    <Input
+                      placeholder="Название задачи"
+                      w={"100%"}
+                      p={2}
+                      onChange={(e) => handleChange("title")(e.target.value)}
+                    />
                   )}
-                  <Dialog.ActionTrigger asChild>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        resetForm();
-                        onClose();
-                      }}
-                    >
-                      Закрыть
-                    </Button>
-                  </Dialog.ActionTrigger>
-                  {(isCreate || isEdit) && (
-                    <Button colorPalette="pink" ml={3} onClick={handleSubmit}>
-                      {isCreate ? "Создать" : "Сохранить"}
-                    </Button>
+                  {isView ? (
+                    <Text>Описание: {form.description}</Text>
+                  ) : (
+                    <Input
+                      placeholder="Описание задачи"
+                      w={"100%"}
+                      p={2}
+                      mt={2}
+                      onChange={(e) =>
+                        handleChange("description")(e.target.value)
+                      }
+                    />
+                  )}
+                  {isCreate && (
+                    <SelectedTaskModal
+                      value={form.boardId}
+                      onChange={(v) => handleChange("boardId")(v)}
+                    />
+                  )}
+                  {isView && !isCreate && (
+                    <Text w={"100%"} pl={2}>
+                      Доска: {form.boardId}
+                    </Text>
+                  )}
+                  {isView ? (
+                    <Text w={"100%"} pl={2}>
+                      Приоритет: {form.priority}
+                    </Text>
+                  ) : (
+                    <SelectPrioriety
+                      value={form.priority}
+                      onChange={(v) => handleChange("priority")(v)}
+                    />
+                  )}
+                  {isView ? (
+                    <Text w={"100%"} pl={2}>
+                      Статус: {form.status}
+                    </Text>
+                  ) : isEdit ? (
+                    <SelectStatus
+                      value={form.status}
+                      onChange={(v) => handleChange("status")(v)}
+                    />
+                  ) : null}
+                  {isView ? (
+                    
+                      <Text w="100%" pl={2}>
+                        Исполнитель: {task?.assignee.fullName}
+                      </Text>
+                    
+                  ) : (
+                    <SelectUsers
+                      value={form.assigneeId}
+                      onChange={(v) => handleChange("assigneeId")(v)}
+                    />
                   )}
                 </>
-              </Dialog.Footer>
-              <Dialog.CloseTrigger asChild>
-                <CloseButton size="sm"  onClick={onClose}/>
-              </Dialog.CloseTrigger>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        {/* </Portal>
+              </VStack>
+            )}
+          </Dialog.Body>
+          <Dialog.Footer pb={6}>
+            <>
+              {isView && (
+                <Button colorPalette='pink' mr={3} onClick={() => setMode("edit")}>
+                  Редактировать
+                </Button>
+              )}
+              <Dialog.ActionTrigger asChild>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    resetForm();
+                    onClose();
+                  }}
+                >
+                  Закрыть
+                </Button>
+              </Dialog.ActionTrigger>
+              {(isCreate || isEdit) && (
+                <Button colorPalette="pink" ml={3} onClick={handleSubmit}>
+                  {isCreate ? "Создать" : "Сохранить"}
+                </Button>
+              )}
+            </>
+          </Dialog.Footer>
+          <Dialog.CloseTrigger asChild>
+            <CloseButton size="sm" onClick={onClose} />
+          </Dialog.CloseTrigger>
+        </Dialog.Content>
+      </Dialog.Positioner>
+      {/* </Portal>
       </Dialog.Root> */}
     </>
   );

@@ -49,6 +49,7 @@ export const AllTasksList = () => {
           borderRadius={30}
           cursor="pointer"
           onClick={() => handleOpen(task.id)}
+          w={'100%'}
         >
           <Text fontSize="xl">{task.title}</Text>
         </Flex>
