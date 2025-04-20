@@ -3,12 +3,16 @@ import { useSummaryTasks } from "../hooks/useSummaryTasks";
 import { SummaryTask } from "@/enteties/SummaryTasks";
 import { useEffect, useState } from "react";
 import { TaskModal } from "@/widgets/TaskModal/TaskModal";
+import { useNavigate } from "react-router-dom";
 
 export const AllTasksList = () => {
   const { data: tasksResponse, isLoading, error } = useSummaryTasks();
-  console.log("data", tasksResponse);
+  const navigate = useNavigate();
   const [selectedTask, setselectedTask] = useState<number | null>(null);
 
+  const navigateToBoardTask = (boardId: number) => {
+    navigate(`/board/${boardId}`);
+  };
   const handleOpen = (id: number) => {
     setselectedTask(id);
   };
@@ -37,22 +41,36 @@ export const AllTasksList = () => {
       </Flex>
     );
   }
-  console.log('tasksresponse', tasksResponse);
-  
+
   return (
     <>
       {tasksResponse.data.map((task: SummaryTask) => (
         <Flex
-          key={task.id}
           bg="pink.100"
           p={5}
           mb={3}
+          key={task.id}
           borderRadius={30}
-          cursor="pointer"
-          onClick={() => handleOpen(task.id)}
           w={"100%"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
         >
-          <Text fontSize="xl">{task.title}</Text>
+          <Text
+            fontSize="xl"
+            onClick={() => handleOpen(task.id)}
+            cursor="pointer"
+            flex={1}
+          >
+            {task.title}
+          </Text>
+          <Text
+            cursor={"pointer"}
+            fontSize={"xs"}
+            key={task.boardId}
+            onClick={() => navigateToBoardTask(task.boardId)}
+          >
+            Перейти к доске
+          </Text>
         </Flex>
       ))}
       {selectedTask !== null && (
@@ -61,7 +79,8 @@ export const AllTasksList = () => {
           open={true}
           onOpenChange={(open) => {
             if (!open) handleClose();
-          }}        >
+          }}
+        >
           <Dialog.Trigger></Dialog.Trigger>
           <Portal>
             <TaskModal

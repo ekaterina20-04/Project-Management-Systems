@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
     navigate(`/`);
   };
 
-  const isTasksPage = location.pathname === "/tasks";
+  const isTasksPage = location.pathname === "/issues";
   const isProjectPage = location.pathname === "/";
 
   return (
