@@ -13,7 +13,7 @@ export interface SummaryTask {
 export interface TasksResponse{
     data: SummaryTask[]
 }
-export interface GetTaskResponse{
+export interface GetTask{
     assignee: Assignee;
     boardName: string;
     description: string;
@@ -21,5 +21,7 @@ export interface GetTaskResponse{
     priority: Priority;
     status: Status;
     title: string;
-  
+}
+export interface GetTaskResponse{
+    data:GetTask
 }

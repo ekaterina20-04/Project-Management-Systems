@@ -1,30 +1,22 @@
-import {
-  Dialog,
-  Flex,
-  Portal,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Dialog, Flex, Portal, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useSummaryTasks } from "../hooks/useSummaryTasks";
 import { SummaryTask } from "@/enteties/SummaryTasks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TaskModal } from "@/widgets/TaskModal/TaskModal";
 
 export const AllTasksList = () => {
   const { data: tasksResponse, isLoading, error } = useSummaryTasks();
-  console.log('data', tasksResponse)
-  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  console.log("data", tasksResponse);
+  const [selectedTask, setselectedTask] = useState<number | null>(null);
   const tasks: SummaryTask[] = tasksResponse?.data ?? [];
 
   const handleOpen = (id: number) => {
-    
-    setSelectedTaskId(id);
-
+    setselectedTask(id);
   };
   const handleClose = () => {
-    setSelectedTaskId(null);
+    setselectedTask(null);
   };
+  
   if (isLoading) {
     return (
       <VStack w={"100%"} justify="center" align="center">
@@ -49,37 +41,36 @@ export const AllTasksList = () => {
   return (
     <>
       {tasks.map((task: SummaryTask) => (
-        <Dialog.Root
+        <Flex
           key={task.id}
-          open={selectedTaskId === task.id}
-          onOpenChange={(open) => !open && setSelectedTaskId(null)}
+          bg="pink.100"
+          p={5}
+          mb={3}
+          borderRadius={30}
+          cursor="pointer"
+          onClick={() => handleOpen(task.id)}
         >
-          <Dialog.Trigger asChild>
-            <Flex
-              key={task.id}
-              bg={"pink.100"}
-              w={"100%"}
-              p={5}
-              borderRadius={30}
-              mb={3}
-              cursor={"pointer"}
-              onClick={() => handleOpen(task.id)}
-            >
-              <Text ml={5} fontSize={"xl"}>
-                {task.title}
-              </Text>
-            </Flex>
-          </Dialog.Trigger>
+          <Text fontSize="xl">{task.title}</Text>
+        </Flex>
+      ))}
+      {selectedTask !== null && (
+        <Dialog.Root
+          key={selectedTask}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) handleClose();
+          }}        >
+          <Dialog.Trigger></Dialog.Trigger>
           <Portal>
             <TaskModal
               initialMode="view"
-              taskId={task.id}
-              isOpen={selectedTaskId === task.id}
+              taskId={selectedTask}
+              isOpen={selectedTask !== null}
               onClose={handleClose}
             />
           </Portal>
         </Dialog.Root>
-      ))}
+      )}
     </>
   );
 };

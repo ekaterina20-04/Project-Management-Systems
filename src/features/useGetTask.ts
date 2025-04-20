@@ -1,34 +1,44 @@
-// hooks/useGetTask.ts
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { GetTaskResponse } from '@/enteties/SummaryTasks'
-import { apiInstance } from '@/shared/api/apiConfig'
+import { GetTaskResponse } from "@/enteties/SummaryTasks";
+import { apiInstance } from "@/shared/api/apiConfig";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-type TaskQueryKey = ['task', number?]
+// Убираем из UseQueryOptions те ключи, которые мы сами всегда прокидываем
+type GetTaskOptions = Omit<
+  UseQueryOptions<
+    GetTaskResponse,      // TQueryFnData
+    Error,                // TError (или ваш кастомный Error)
+    GetTaskResponse,      // TData
+    ['task', number?]     // TQueryKey — ключ сегментации кэша
+  >,
+  'queryKey' | 'queryFn'
+>;
 
 export const useGetTask = (
   taskId?: number,
-  options?: Omit<
-    UseQueryOptions<
-      GetTaskResponse,    // TQueryFnData
-      Error,              // TError
-      GetTaskResponse,    // TData
-      TaskQueryKey        // TQueryKey
-    >,
-    'queryKey' | 'queryFn'
-  >
+  options?: GetTaskOptions
 ) => {
-  return useQuery<GetTaskResponse, Error, GetTaskResponse, TaskQueryKey>({
-    // здесь всё в одном объекте
+  return useQuery<GetTaskResponse, Error, GetTaskResponse, ['task', number?]>({
+    // мы жёстко задаём queryKey и queryFn,
+    // а остальные опции (например enabled) приходят в `options`
     queryKey: ['task', taskId],
     queryFn: async () => {
-      const  data  = await apiInstance.get<GetTaskResponse>(
+      const  response  = await apiInstance.get<GetTaskResponse>(
         `/tasks/${taskId}`
-      )
-      return data.data
+      );
+      return response.data;
     },
-    // не дергать, пока нет taskId
-    enabled: Boolean(taskId),
-    // сюда попадут ваши дополнительные опции
-    ...options,
-  })
-}
+    enabled: false,   // по‑умолчанию ничего не дергаем
+    ...options,       // сюда придёт { enabled: isOpen && !!taskId }
+  });
+};
+
+// export const useGetTask = (taskId:number) => {
+//     return useQuery({
+//       queryKey: ['getTask'],
+//       queryFn: async ():Promise<GetTaskResponse> => {
+//         const response = await apiInstance.get<GetTaskResponse>(`/tasks/${taskId}`);
+//         console.log(response.data)
+//         return response.data;
+//       }
+//     });
+//   };
