@@ -13,8 +13,6 @@ import { SelectedTaskModal } from "./SelectTaskModal";
 import { SelectUsers } from "./SelectUsers";
 import { SelectPrioriety } from "./SelectPrioriety";
 import { SelectStatus } from "./SelectStatus";
-import { useAllProjects } from "@/pages/AllProgectsPage/hooks/useAllProjects";
-import { useGetUsers } from "@/features/useGetUsers";
 import { useCreateTasks } from "@/features/useCreateTask";
 import { useEffect, useState } from "react";
 import { Priority, Status } from "@/enteties/Board";
@@ -34,6 +32,7 @@ interface CreateFormState {
   description: string;
   boardId: string;
   assigneeId: string;
+  assigneeName: string;
   priority: Priority | "";
   status: Status | "";
 }
@@ -62,12 +61,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const { data, isLoading: loadingTask } = useGetTask(taskId!, {
     enabled: typeof taskId === "number",
   });
-  const { data: projectsResponse } = useAllProjects();
-  const { data: usersResponse } = useGetUsers();
+ 
   const createTask = useCreateTasks();
   const updateTask = useUpdateTask();
-  const projects = projectsResponse?.data ?? [];
-  const users = usersResponse?.data ?? [];
+  
 
   const task = data?.data;
   console.log(task, "task");
@@ -76,7 +73,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     title: "",
     description: "",
     boardId: "",
-    assigneeId: "",
+    assigneeId: '',
+    assigneeName: '',
     priority: "",
     status: "",
   });
@@ -87,7 +85,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         title: task.title,
         description: task.description,
         boardId: String(task.boardName),
-        assigneeId: String(task.assignee.fullName),
+        assigneeId: String(task.assignee.id),
+        assigneeName: String(task.assignee.fullName),
         priority: task.priority,
         status: task.status,
       });
@@ -108,6 +107,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       description: "",
       boardId: "",
       assigneeId: "",
+      assigneeName: "",
       priority: "",
       status: "",
     });
@@ -139,9 +139,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   return (
     <>
-      {/* <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <Dialog.Trigger></Dialog.Trigger>
-        <Portal> */}
+      
       <Dialog.Backdrop zIndex={1} />
       <Dialog.Positioner
         display={"flex"}
@@ -178,6 +176,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       w={"100%"}
                       p={2}
                       onChange={(e) => handleChange("title")(e.target.value)}
+                      value={form.title}
+
                     />
                   )}
                   {isView ? (
@@ -191,18 +191,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       onChange={(e) =>
                         handleChange("description")(e.target.value)
                       }
+                      value={form.description}
+
                     />
                   )}
-                  {isCreate && (
-                    <SelectedTaskModal
-                      value={form.boardId}
-                      onChange={(v) => handleChange("boardId")(v)}
-                    />
-                  )}
-                  {isView && !isCreate && (
-                    <Text w={"100%"} pl={2}>
+                  {isView||isEdit?(<Text w={"100%"} pl={2} pt={2}>
                       Доска: {form.boardId}
-                    </Text>
+                    </Text>):(
+                    <SelectedTaskModal
+                    value={form.boardId}
+                    onChange={(v) => handleChange("boardId")(v)}
+                  />
                   )}
                   {isView ? (
                     <Text w={"100%"} pl={2}>
@@ -260,7 +259,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               </Dialog.ActionTrigger>
               {(isCreate || isEdit) && (
                 <Button colorPalette="pink" ml={3} onClick={handleSubmit}>
-                  {isCreate ? "Создать" : "Сохранить"}
+                  {isCreate ? "Создать задачу" : "Сохранить изменения"}
                 </Button>
               )}
             </>
@@ -270,8 +269,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </Dialog.CloseTrigger>
         </Dialog.Content>
       </Dialog.Positioner>
-      {/* </Portal>
-      </Dialog.Root> */}
+      
     </>
   );
 };

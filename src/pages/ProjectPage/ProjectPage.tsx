@@ -173,6 +173,7 @@ export const ProjectPage: React.FC = () => {
               taskId={selectedTask}
               isOpen={selectedTask !== null}
               onClose={handleClose}
+              
             />
           </Portal>
         </Dialog.Root>

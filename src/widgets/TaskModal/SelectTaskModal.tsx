@@ -27,6 +27,7 @@ export const SelectedTaskModal: FC<SelectedTaskModalProps> = ({ value, onChange 
       size="sm"
       width="310px"
       zIndex={999}
+      pt={2}
     >
       <Select.HiddenSelect />
       <Select.Control>

@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,  
     children: [
       { index: true, element: <AllProjectsPage /> },
-      { path: "tasks",  element: <TasksPage /> },
+      { path: "issues",  element: <TasksPage /> },
       { path: "board/:boardId", element: <ProjectPage /> },
     ],
   },

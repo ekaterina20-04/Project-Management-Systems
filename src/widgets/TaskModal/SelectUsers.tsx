@@ -15,7 +15,8 @@ export const SelectUsers: FC<SelectUsersProps> = ({ value, onChange }) => {
   const collection = createListCollection({
     items: data.data.map((u) => ({ value: String(u.id), label: u.fullName })),
   });
-
+  console.log('value',value);
+  
   return (
     <Select.Root
       collection={collection}

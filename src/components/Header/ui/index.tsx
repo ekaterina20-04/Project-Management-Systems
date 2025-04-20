@@ -1,17 +1,16 @@
-import { TaskModal } from "@/widgets/TaskModal/TaskModal";
-import { Button, Dialog, HStack, Portal, Text, useDisclosure } from "@chakra-ui/react";
+import { CreateTaskButton } from "@/features/button/CreateTaskButton";
+import { HStack, Text } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const navigateToTasks = () => {
-    navigate(`/tasks`);
+    navigate(`/issues`);
   };
   const navigateToProjects = () => {
     navigate(`/`);
   };
-  const { open, onOpen, onClose } = useDisclosure();
 
   const isTasksPage = location.pathname === "/tasks";
   const isProjectPage = location.pathname === "/";
@@ -33,19 +32,7 @@ export const Header: React.FC = () => {
           Проекты
         </Text>
       </HStack>
-      <Dialog.Root >
-        <Dialog.Trigger asChild>
-          <Button colorPalette={"pink"} borderRadius={30} pb={1}>
-            Создать задачу
-          </Button>
-        </Dialog.Trigger>
-        <Portal >
-          <TaskModal initialMode="create"
-        isOpen={open}
-        onClose={onClose}
-        />
-        </Portal>
-      </Dialog.Root>
+      <CreateTaskButton />
     </HStack>
   );
 };

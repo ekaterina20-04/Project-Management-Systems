@@ -1,4 +1,4 @@
-import { ProjectsResponse, summaryProject } from "@/enteties/summaryProjects";
+import { summaryProject } from "@/enteties/summaryProjects";
 import { Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useAllProjects } from "../hooks/useAllProjects";
