@@ -9,6 +9,7 @@ export const AllProjectsPage: React.FC = () => {
       <VStack w={"100%"} mt={5}>
         <Text textTransform={'uppercase'} fontSize={'xx-large'} mb={5}>Ваши проекты</Text>
           <ProjectList/>
+        
       </VStack>
     </>
   );
