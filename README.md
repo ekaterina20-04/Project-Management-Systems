@@ -1,54 +1,54 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Мини-версия системы управления проектами с поддержкой просмотра, создания и редактирования задач, а также управления досками и задачами внутри них.
 
-Currently, two official plugins are available:
+## Стек технологий
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Node.js** 
+- **React** 
+- **TypeScript**
+- **Vite** сборка
+- **react-router-dom** маршрутизация
+- **@tanstack/react-query** работа с API
+- **Axios** — HTTP-клиент
+- **Chakra UI** — UI-компоненты
+- **@hello-pangea/dnd** — drag-and-drop интерфейс
+- **React Hook Form** — формы
+- **ESLint + Prettier** — линтинг и форматирование
 
-## Expanding the ESLint configuration
+## Установка и запуск проекта
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+npm run dev
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Основной функционал
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Просмотр всех задач с фильтрацией и поиском
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Просмотр всех досок
+
+Просмотр задач на конкретной доске с разделением по статусам
+
+Drag-and-drop задач между колонками
+
+Создание/редактирование задачи в modal/drawer с предзаполненными полями
+
+Сохранение черновика формы при перезагрузке
+
+Header с навигацией по основным страницам
+
+## Обоснование выбора технологий
+
+TypeScript: строгая типизация, улучшение DX и предотвращение ошибок
+
+Chakra UI: быстрое создание адаптивных компонентов без необходимости писать много CSS
+
+React Query: эффективное управление состоянием серверных данных и кеширование
+
+Vite: быстрый dev-сервер и быстрая сборка
+
+React Hook Form: простое управление формами и валидацией
+
+@hello-pangea/dnd: надёжный drag-and-drop, необходимый для взаимодействия с задачами
+
+ESLint + Prettier: соблюдение единого стиля кода
