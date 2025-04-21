@@ -18,13 +18,12 @@ export const ScrollButtons: React.FC = () => {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // вызвать один раз при загрузке
+    onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToTop = () =>
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const scrollToBottom = () => {
     const scrollHeight = document.documentElement.scrollHeight;

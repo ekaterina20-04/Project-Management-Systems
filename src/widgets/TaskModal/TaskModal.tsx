@@ -4,7 +4,6 @@ import {
   Dialog,
   Flex,
   Input,
-  Portal,
   Spinner,
   Text,
   VStack,
@@ -19,23 +18,7 @@ import { Priority, Status } from "@/enteties/Board";
 import { TaskCreatePequest, TaskUpdatePequest } from "@/enteties/Task";
 import { useUpdateTask } from "@/features/useUpdateTask";
 import { useGetTask } from "@/features/useGetTask";
-interface TaskModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  taskId?: number;
-  initialMode: "create" | "view";
-  onSuccess?: () => void;
-}
-type Mode = "create" | "view" | "edit";
-interface CreateFormState {
-  title: string;
-  description: string;
-  boardId: string;
-  assigneeId: string;
-  assigneeName: string;
-  priority: Priority | "";
-  status: Status | "";
-}
+import { CreateFormState, Mode, TaskModalProps } from "@/enteties/Modal";
 
 export const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
@@ -53,7 +36,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       resetForm();
     }
   }, [initialMode, isOpen]);
-  console.log("initialMode", taskId);
   const isCreate = mode === "create";
   const isView = mode === "view";
   const isEdit = mode === "edit";
@@ -61,20 +43,18 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const { data, isLoading: loadingTask } = useGetTask(taskId!, {
     enabled: typeof taskId === "number",
   });
- 
+
   const createTask = useCreateTasks();
   const updateTask = useUpdateTask();
-  
 
   const task = data?.data;
-  console.log(task, "task");
 
   const [form, setForm] = useState<CreateFormState>({
     title: "",
     description: "",
     boardId: "",
-    assigneeId: '',
-    assigneeName: '',
+    assigneeId: "",
+    assigneeName: "",
     priority: "",
     status: "",
   });
@@ -113,33 +93,36 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     });
 
   const handleSubmit = async () => {
-    if (isCreate) {
-      const payload: TaskCreatePequest = {
-        title: form.title,
-        description: form.description,
-        boardId: Number(form.boardId),
-        assigneeId: Number(form.assigneeId),
-        priority: form.priority as Priority,
-      };
-      await createTask.mutateAsync(payload);
-    } else {
-      const payload: TaskUpdatePequest = {
-        title: String(form.title),
-        description: String(form.description),
-        assigneeId: Number(form.assigneeId),
-        priority: form.priority as Priority,
-        status: form.status as Status,
-      };
-      await updateTask.mutateAsync({ taskId: taskId!, data: payload });
+    try {
+      if (isCreate) {
+        const payload: TaskCreatePequest = {
+          title: form.title,
+          description: form.description,
+          boardId: Number(form.boardId),
+          assigneeId: Number(form.assigneeId),
+          priority: form.priority as Priority,
+        };
+        await createTask.mutateAsync(payload);
+      } else {
+        const payload: TaskUpdatePequest = {
+          title: String(form.title),
+          description: String(form.description),
+          assigneeId: Number(form.assigneeId),
+          priority: form.priority as Priority,
+          status: form.status as Status,
+        };
+        await updateTask.mutateAsync({ taskId: taskId!, data: payload });
+      }
+      resetForm();
+      onSuccess?.();
+      onClose();
+    } catch (error: any) {
+      alert("Не удалось отправить форму");
     }
-    resetForm();
-    onSuccess?.();
-    onClose();
   };
 
   return (
     <>
-      
       <Dialog.Backdrop zIndex={1} />
       <Dialog.Positioner
         display={"flex"}
@@ -169,7 +152,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <VStack justifyContent={"center"}>
                 <>
                   {isView ? (
-                    <Text w={"100%"} pl={2}>Задача: {form.title}</Text>
+                    <Text w={"100%"} pl={2}>
+                      Задача: {form.title}
+                    </Text>
                   ) : (
                     <Input
                       placeholder="Название задачи"
@@ -177,11 +162,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       p={2}
                       onChange={(e) => handleChange("title")(e.target.value)}
                       value={form.title}
-
                     />
                   )}
                   {isView ? (
-                    <Text w={"100%"} pl={2}>Описание: {form.description}</Text>
+                    <Text w={"100%"} pl={2}>
+                      Описание: {form.description}
+                    </Text>
                   ) : (
                     <Input
                       placeholder="Описание задачи"
@@ -192,16 +178,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                         handleChange("description")(e.target.value)
                       }
                       value={form.description}
-
                     />
                   )}
-                  {isView||isEdit?(<Text w={"100%"} pl={2} pt={2}>
+                  {isView || isEdit ? (
+                    <Text w={"100%"} pl={2} pt={2}>
                       Доска: {form.boardId}
-                    </Text>):(
+                    </Text>
+                  ) : (
                     <SelectedTaskModal
-                    value={form.boardId}
-                    onChange={(v) => handleChange("boardId")(v)}
-                  />
+                      value={form.boardId}
+                      onChange={(v) => handleChange("boardId")(v)}
+                    />
                   )}
                   {isView ? (
                     <Text w={"100%"} pl={2}>
@@ -224,11 +211,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     />
                   ) : null}
                   {isView ? (
-                    
-                      <Text w="100%" pl={2}>
-                        Исполнитель: {task?.assignee.fullName}
-                      </Text>
-                    
+                    <Text w="100%" pl={2}>
+                      Исполнитель: {task?.assignee.fullName}
+                    </Text>
                   ) : (
                     <SelectUsers
                       value={form.assigneeId}
@@ -242,7 +227,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <Dialog.Footer pb={6}>
             <>
               {isView && (
-                <Button colorPalette='pink' mr={3} onClick={() => setMode("edit")}>
+                <Button
+                  colorPalette="pink"
+                  mr={3}
+                  onClick={() => setMode("edit")}
+                >
                   Редактировать
                 </Button>
               )}
@@ -269,7 +258,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </Dialog.CloseTrigger>
         </Dialog.Content>
       </Dialog.Positioner>
-      
     </>
   );
 };

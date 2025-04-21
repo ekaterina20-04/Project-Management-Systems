@@ -37,7 +37,6 @@ const customConfig = defineConfig({
       colors: {
         brand: {
           100: { value: "#db2777" },
-          200: { value: "#505FFF" },
         },
       },
       fonts: {

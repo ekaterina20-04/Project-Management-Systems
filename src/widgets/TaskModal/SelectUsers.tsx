@@ -1,13 +1,14 @@
-import  { FC } from "react";
-import { Portal, Select, createListCollection, Spinner } from "@chakra-ui/react";
+import { FC } from "react";
+import {
+  Portal,
+  Select,
+  createListCollection,
+  Spinner,
+} from "@chakra-ui/react";
 import { useGetUsers } from "@/features/useGetUsers";
+import { SelectProps } from "@/enteties/Selects";
 
-interface SelectUsersProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export const SelectUsers: FC<SelectUsersProps> = ({ value, onChange }) => {
+export const SelectUsers: FC<SelectProps> = ({ value, onChange }) => {
   const { data, isLoading } = useGetUsers();
   if (isLoading) return <Spinner size="sm" />;
   if (!data) return null;
@@ -15,8 +16,7 @@ export const SelectUsers: FC<SelectUsersProps> = ({ value, onChange }) => {
   const collection = createListCollection({
     items: data.data.map((u) => ({ value: String(u.id), label: u.fullName })),
   });
-  console.log('value',value);
-  
+
   return (
     <Select.Root
       collection={collection}
@@ -35,7 +35,9 @@ export const SelectUsers: FC<SelectUsersProps> = ({ value, onChange }) => {
         <Select.Trigger>
           <Select.ValueText placeholder="Выберите исполнителя" />
         </Select.Trigger>
-        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
       </Select.Control>
       <Portal>
         <Select.Positioner>

@@ -1,11 +1,7 @@
-import  { FC } from "react";
+import { FC } from "react";
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
 import { Status } from "@/enteties/Board";
-
-interface SelectStatusProps {
-  value: Status | "";
-  onChange: (value: Status) => void;
-}
+import { SelectStatusProps } from "@/enteties/Selects";
 
 const OPTIONS: Status[] = ["Backlog", "InProgress", "Done"];
 
@@ -32,7 +28,9 @@ export const SelectStatus: FC<SelectStatusProps> = ({ value, onChange }) => {
         <Select.Trigger>
           <Select.ValueText placeholder="Выберите статус" />
         </Select.Trigger>
-        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
       </Select.Control>
       <Portal>
         <Select.Positioner>

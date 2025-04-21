@@ -1,4 +1,13 @@
-import { Box, Dialog, Flex, Portal, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Dialog,
+  Flex,
+  Portal,
+  Spinner,
+  Text,
+  useBreakpointValue,
+  VStack,
+} from "@chakra-ui/react";
 import {
   DragDropContext,
   Droppable,
@@ -22,7 +31,7 @@ export const ProjectPage: React.FC = () => {
 
   const { boardId } = useParams<string>();
   const boardIdNumber = Number(boardId);
-  const {mutate:updateStatus}=useUpdatingTaskStatus();
+  const { mutate: updateStatus } = useUpdatingTaskStatus();
   const tasksQuery = useSummaryTasksId(boardId || "");
   const projectsQuery = useAllProjects();
   const { state } = useLocation() as { state?: { openTaskId?: number } };
@@ -49,15 +58,12 @@ export const ProjectPage: React.FC = () => {
   useEffect(() => {
     if (tasksQuery.data) {
       const tasks = tasksQuery.data.data;
-      console.log("tasks", tasks);
       const grouped: Record<Status, SummaryBoardId[]> = {
         Backlog: [],
         InProgress: [],
         Done: [],
       };
       tasks.forEach((task) => {
-        console.log(task);
-        console.log("task.status:", task.status);
         grouped[task.status].push(task);
       });
       setColumns(grouped);
@@ -65,7 +71,7 @@ export const ProjectPage: React.FC = () => {
   }, [tasksQuery.data]);
 
   const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source } = result;
 
     if (!destination) return;
 
@@ -113,7 +119,7 @@ export const ProjectPage: React.FC = () => {
   const titleOfBoard = selectedBoard?.name;
 
   return (
-    <VStack gap={5} align="stretch" >
+    <VStack gap={5} align="stretch">
       <Text fontSize="2xl" fontWeight="bold">
         {titleOfBoard}
       </Text>
@@ -129,13 +135,12 @@ export const ProjectPage: React.FC = () => {
                   p={4}
                   borderRadius="lg"
                   align="stretch"
-                  bg={'pink.100'}
+                  bg={"pink.100"}
                 >
                   <Text fontSize="lg" fontWeight="semibold">
                     {status}
                   </Text>
                   {columns[status].map((task, index) => (
-                    
                     <Draggable
                       draggableId={task.id.toString()}
                       index={index}
@@ -150,8 +155,8 @@ export const ProjectPage: React.FC = () => {
                           p={4}
                           borderRadius="md"
                           boxShadow="md"
-                          onClick={() => handleOpen(task.id)}  // открываем модалку
-                          cursor={'pointer'}
+                          onClick={() => handleOpen(task.id)} 
+                          cursor={"pointer"}
                         >
                           <Text fontWeight="medium">{task.title}</Text>
                         </Box>
@@ -171,7 +176,8 @@ export const ProjectPage: React.FC = () => {
           open={true}
           onOpenChange={(open) => {
             if (!open) handleClose();
-          }}        >
+          }}
+        >
           <Dialog.Trigger></Dialog.Trigger>
           <Portal>
             <TaskModal
@@ -179,7 +185,6 @@ export const ProjectPage: React.FC = () => {
               taskId={selectedTask}
               isOpen={selectedTask !== null}
               onClose={handleClose}
-              
             />
           </Portal>
         </Dialog.Root>

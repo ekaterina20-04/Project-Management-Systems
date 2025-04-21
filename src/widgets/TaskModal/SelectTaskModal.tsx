@@ -1,13 +1,14 @@
-import  { FC } from "react";
-import { Portal, Select, createListCollection, Spinner } from "@chakra-ui/react";
+import { FC } from "react";
+import {
+  Portal,
+  Select,
+  createListCollection,
+  Spinner,
+} from "@chakra-ui/react";
 import { useAllProjects } from "@/pages/AllProgectsPage/hooks/useAllProjects";
+import { SelectProps } from "@/enteties/Selects";
 
-interface SelectedTaskModalProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export const SelectedTaskModal: FC<SelectedTaskModalProps> = ({ value, onChange }) => {
+export const SelectedTaskModal: FC<SelectProps> = ({ value, onChange }) => {
   const { data, isLoading } = useAllProjects();
   if (isLoading) return <Spinner size="sm" />;
   if (!data) return null;
@@ -34,7 +35,9 @@ export const SelectedTaskModal: FC<SelectedTaskModalProps> = ({ value, onChange 
         <Select.Trigger>
           <Select.ValueText placeholder="Выберите проект" />
         </Select.Trigger>
-        <Select.IndicatorGroup><Select.Indicator /></Select.IndicatorGroup>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
       </Select.Control>
       <Portal>
         <Select.Positioner>

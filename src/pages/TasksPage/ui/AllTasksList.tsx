@@ -1,32 +1,15 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  Flex,
-  HStack,
-  Input,
-  Portal,
-  Select,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useSummaryTasks } from "../hooks/useSummaryTasks";
 import { SummaryTask } from "@/enteties/SummaryTasks";
-import { useEffect, useMemo, useState } from "react";
-import { TaskModal } from "@/widgets/TaskModal/TaskModal";
-import { useNavigate } from "react-router-dom";
-import { SelectStatus } from "@/widgets/TaskModal/SelectStatus";
-import { SelectedTaskModal } from "@/widgets/TaskModal/SelectTaskModal";
+import { useMemo, useState } from "react";
 import { Status } from "@/enteties/Board";
+import { TaskContent } from "./TaskContent";
+import { Filters } from "./Filters";
 
 export const AllTasksList = () => {
   const { data: tasksResponse, isLoading, error } = useSummaryTasks();
-  const navigate = useNavigate();
-  const [selectedTask, setselectedTask] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<Status | "">("");
   const [boardFilter, setBoardFilter] = useState<string>("");
-  const [showFilters, setShowFilters] = useState(false);
   const [titleSearch, setTitleSearch] = useState<string>("");
   const [assigneeSearch, setAssigneeSearch] = useState<string>("");
 
@@ -48,17 +31,6 @@ export const AllTasksList = () => {
       return matchesStatus && matchesBoard && matchesTitle && matchesAssignee;
     });
   }, [tasksResponse, statusFilter, boardFilter, titleSearch, assigneeSearch]);
-  const navigateToBoardTask = (boardId: number, taskId:number) => {
-    navigate(`/board/${boardId}`, {
-      state: { openTaskId: taskId },
-    });
-  };
-  const handleOpen = (id: number) => {
-    setselectedTask(id);
-  };
-  const handleClose = () => {
-    setselectedTask(null);
-  };
 
   if (isLoading) {
     return (
@@ -83,107 +55,22 @@ export const AllTasksList = () => {
   }
 
   return (
-    <Flex w={'100%'}>
+    <Flex w={"100%"}>
       <Box w="100%">
-        <VStack mb={5} w={"100%"} alignItems={"end"}>
-          {!showFilters && (
-            <Flex w={'100%'} justifyContent={'end'}>
-            <Button
-              borderRadius={30}
-              colorPalette={"pink"}
-              onClick={() => setShowFilters(true)}
-              
-            >
-              Фильтровать
-            </Button></Flex>
-          )}
-          {showFilters && (
-            <HStack mb={5} alignItems={"start"}>
-              <VStack mt={4}>
-                <Input
-                  placeholder="По названию задачи"
-                  size="sm"
-                  value={titleSearch}
-                  onChange={(e) => setTitleSearch(e.target.value)}
-                  maxW="200px"
-                />
-                <Input
-                  placeholder="По исполнителю"
-                  size="sm"
-                  value={assigneeSearch}
-                  onChange={(e) => setAssigneeSearch(e.target.value)}
-                  maxW="200px"
-                  mt={2}
-                />
-              </VStack>
-              <VStack>
-                <SelectStatus
-                  value={statusFilter as Status}
-                  onChange={setStatusFilter}
-                />
-                <SelectedTaskModal
-                  value={boardFilter}
-                  onChange={setBoardFilter}
-                />
-                <Flex justifyContent={"end"} w={"100%"}>
-                  <Button
-                    onClick={() => setShowFilters(false)}
-                    colorPalette={"pink"}
-                    borderRadius={30}
-                  >
-                    Скрыть
-                  </Button>
-                </Flex>
-              </VStack>
-            </HStack>
-          )}
-        </VStack>
+        <Filters
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          boardFilter={boardFilter}
+          setBoardFilter={setBoardFilter}
+          titleSearch={titleSearch}
+          setTitleSearch={setTitleSearch}
+          assigneeSearch={assigneeSearch}
+          setAssigneeSearch={setAssigneeSearch}
+        />
         {filteredTasks.map((task: SummaryTask) => (
-          <Flex
-            key={task.id}
-            bg="pink.100"
-            p={5}
-            mb={3}
-            borderRadius={30}
-            w="100%"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Text
-              fontSize="xl"
-              onClick={() => handleOpen(task.id)}
-              cursor="pointer"
-              flex={1}
-            >
-              {task.title}
-            </Text>
-            <Text
-              cursor="pointer"
-              fontSize="xs"
-              onClick={() => navigateToBoardTask(task.boardId, task.id)}
-            >
-              Перейти к доске
-            </Text>
-          </Flex>
+          <TaskContent key={task.id} task={task} />
         ))}
       </Box>
-
-      {selectedTask !== null && (
-        <Dialog.Root
-          open={true}
-          onOpenChange={(open) => !open && handleClose()}
-        >
-          <Dialog.Trigger />
-          <Portal>
-            <TaskModal
-              initialMode="view"
-              taskId={selectedTask}
-              isOpen={selectedTask !== null}
-              onClose={handleClose}
-            />
-          </Portal>
-        </Dialog.Root>
-      )}
     </Flex>
   );
 };
