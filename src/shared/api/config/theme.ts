@@ -36,8 +36,7 @@ const customConfig = defineConfig({
     tokens: {
       colors: {
         brand: {
-          100: { value: "#e6f2ff" },
-          200: { value: "#505FFF" },
+          100: { value: "#db2777" },
         },
       },
       fonts: {
