@@ -48,8 +48,10 @@ export const AllTasksList = () => {
       return matchesStatus && matchesBoard && matchesTitle && matchesAssignee;
     });
   }, [tasksResponse, statusFilter, boardFilter, titleSearch, assigneeSearch]);
-  const navigateToBoardTask = (boardId: number) => {
-    navigate(`/board/${boardId}`);
+  const navigateToBoardTask = (boardId: number, taskId:number) => {
+    navigate(`/board/${boardId}`, {
+      state: { openTaskId: taskId },
+    });
   };
   const handleOpen = (id: number) => {
     setselectedTask(id);
@@ -158,7 +160,7 @@ export const AllTasksList = () => {
             <Text
               cursor="pointer"
               fontSize="xs"
-              onClick={() => navigateToBoardTask(task.boardId)}
+              onClick={() => navigateToBoardTask(task.boardId, task.id)}
             >
               Перейти к доске
             </Text>

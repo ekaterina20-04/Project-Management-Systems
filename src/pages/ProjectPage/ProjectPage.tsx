@@ -6,7 +6,7 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useAllProjects } from "../AllProgectsPage/hooks/useAllProjects";
 import { useSummaryTasksId } from "./hooks/useSummaryTasksId";
 
@@ -25,7 +25,8 @@ export const ProjectPage: React.FC = () => {
   const {mutate:updateStatus}=useUpdatingTaskStatus();
   const tasksQuery = useSummaryTasksId(boardId || "");
   const projectsQuery = useAllProjects();
-
+  const { state } = useLocation() as { state?: { openTaskId?: number } };
+  const openTaskId = state?.openTaskId;
   const [selectedTask, setselectedTask] = useState<number | null>(null);
 
   const handleOpen = (id: number) => {
@@ -34,6 +35,11 @@ export const ProjectPage: React.FC = () => {
   const handleClose = () => {
     setselectedTask(null);
   };
+  useEffect(() => {
+    if (openTaskId) {
+      setselectedTask(openTaskId);
+    }
+  }, [openTaskId]);
   const [columns, setColumns] = useState<Record<Status, SummaryBoardId[]>>({
     Backlog: [],
     InProgress: [],

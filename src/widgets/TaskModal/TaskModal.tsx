@@ -169,7 +169,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <VStack justifyContent={"center"}>
                 <>
                   {isView ? (
-                    <Text>Задача: {form.title}</Text>
+                    <Text w={"100%"} pl={2}>Задача: {form.title}</Text>
                   ) : (
                     <Input
                       placeholder="Название задачи"
@@ -181,7 +181,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     />
                   )}
                   {isView ? (
-                    <Text>Описание: {form.description}</Text>
+                    <Text w={"100%"} pl={2}>Описание: {form.description}</Text>
                   ) : (
                     <Input
                       placeholder="Описание задачи"
