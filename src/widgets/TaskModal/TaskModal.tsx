@@ -3,6 +3,7 @@ import {
   CloseButton,
   Dialog,
   Flex,
+  HStack,
   Input,
   Spinner,
   Text,
@@ -19,6 +20,8 @@ import { TaskCreatePequest, TaskUpdatePequest } from "@/enteties/Task";
 import { useUpdateTask } from "@/features/useUpdateTask";
 import { useGetTask } from "@/features/useGetTask";
 import { CreateFormState, Mode, TaskModalProps } from "@/enteties/Modal";
+import { useNavigate } from "react-router-dom";
+import { useAllProjects } from "@/pages/AllProgectsPage/hooks/useAllProjects";
 
 export const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
@@ -39,6 +42,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const isCreate = mode === "create";
   const isView = mode === "view";
   const isEdit = mode === "edit";
+  const { data: projectsData, isLoading } = useAllProjects();
+
+  const navigate = useNavigate();
 
   const { data, isLoading: loadingTask } = useGetTask(taskId!, {
     enabled: typeof taskId === "number",
@@ -119,6 +125,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     } catch (error: any) {
       alert("Не удалось отправить форму");
     }
+  };
+
+  if (isLoading) {
+    return <Spinner size="xl" />;
+  }
+  const navigateToBoardForTasks = (boardId: string) => {
+    const board = projectsData?.data.find((b) => b.name === form.boardId);
+
+    navigate(`/board/${board?.id}`);
+
+    console.log(boardId, board);
   };
 
   return (
@@ -227,25 +244,35 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <Dialog.Footer pb={6}>
             <>
               {isView && (
-                <Button
-                  colorPalette="pink"
-                  mr={3}
-                  onClick={() => setMode("edit")}
-                >
-                  Редактировать
-                </Button>
+                <HStack justifyContent={"space-between"}>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigateToBoardForTasks(form.boardId)}
+                  >
+                    Перейти на доску
+                  </Button>
+                  <Button
+                    colorPalette="pink"
+                    mr={3}
+                    onClick={() => setMode("edit")}
+                  >
+                    Редактировать
+                  </Button>
+                </HStack>
               )}
-              <Dialog.ActionTrigger asChild>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    resetForm();
-                    onClose();
-                  }}
-                >
-                  Закрыть
-                </Button>
-              </Dialog.ActionTrigger>
+              {!isView && (
+                <Dialog.ActionTrigger asChild>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      resetForm();
+                      onClose();
+                    }}
+                  >
+                    Закрыть
+                  </Button>
+                </Dialog.ActionTrigger>
+              )}
               {(isCreate || isEdit) && (
                 <Button colorPalette="pink" ml={3} onClick={handleSubmit}>
                   {isCreate ? "Создать задачу" : "Сохранить изменения"}
