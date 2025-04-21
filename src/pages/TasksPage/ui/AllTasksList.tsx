@@ -4,6 +4,7 @@ import {
   Dialog,
   Flex,
   HStack,
+  Input,
   Portal,
   Select,
   Spinner,
@@ -26,6 +27,8 @@ export const AllTasksList = () => {
   const [statusFilter, setStatusFilter] = useState<Status | "">("");
   const [boardFilter, setBoardFilter] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
+  const [titleSearch, setTitleSearch] = useState<string>("");
+  const [assigneeSearch, setAssigneeSearch] = useState<string>("");
 
   const filteredTasks = useMemo(() => {
     if (!tasksResponse) return [];
@@ -34,9 +37,17 @@ export const AllTasksList = () => {
       const matchesBoard = boardFilter
         ? String(task.boardId) === boardFilter
         : true;
-      return matchesStatus && matchesBoard;
+      const matchesTitle = titleSearch
+        ? task.title.toLowerCase().includes(titleSearch.toLowerCase())
+        : true;
+      const matchesAssignee = assigneeSearch
+        ? task.assignee.fullName
+            .toLowerCase()
+            .includes(assigneeSearch.toLowerCase())
+        : true;
+      return matchesStatus && matchesBoard && matchesTitle && matchesAssignee;
     });
-  }, [tasksResponse, statusFilter, boardFilter]);
+  }, [tasksResponse, statusFilter, boardFilter, titleSearch, assigneeSearch]);
   const navigateToBoardTask = (boardId: number) => {
     navigate(`/board/${boardId}`);
   };
@@ -70,21 +81,60 @@ export const AllTasksList = () => {
   }
 
   return (
-    <Flex>
+    <Flex w={'100%'}>
       <Box w="100%">
-        <VStack mb={5} w={'100%'} alignItems={'end'}>
-        {!showFilters && (
-        <Button borderRadius={30} colorPalette={'pink'}  onClick={() => setShowFilters(true)}>
-          Фильтровать
-        </Button>
-      )}
+        <VStack mb={5} w={"100%"} alignItems={"end"}>
+          {!showFilters && (
+            <Flex w={'100%'} justifyContent={'end'}>
+            <Button
+              borderRadius={30}
+              colorPalette={"pink"}
+              onClick={() => setShowFilters(true)}
+              
+            >
+              Фильтровать
+            </Button></Flex>
+          )}
           {showFilters && (
-        <VStack  w={'100%'} alignItems={'end'}>
-          <SelectStatus value={statusFilter as Status} onChange={setStatusFilter} />
-          <SelectedTaskModal value={boardFilter} onChange={setBoardFilter} />
-          <Button borderRadius={30} colorPalette={'pink'} onClick={() => setShowFilters(false)}>Скрыть</Button>
-        </VStack>
-      )}
+            <HStack mb={5} alignItems={"start"}>
+              <VStack mt={4}>
+                <Input
+                  placeholder="По названию задачи"
+                  size="sm"
+                  value={titleSearch}
+                  onChange={(e) => setTitleSearch(e.target.value)}
+                  maxW="200px"
+                />
+                <Input
+                  placeholder="По исполнителю"
+                  size="sm"
+                  value={assigneeSearch}
+                  onChange={(e) => setAssigneeSearch(e.target.value)}
+                  maxW="200px"
+                  mt={2}
+                />
+              </VStack>
+              <VStack>
+                <SelectStatus
+                  value={statusFilter as Status}
+                  onChange={setStatusFilter}
+                />
+                <SelectedTaskModal
+                  value={boardFilter}
+                  onChange={setBoardFilter}
+                />
+                <Flex justifyContent={"end"} w={"100%"}>
+                  <Button
+                    onClick={() => setShowFilters(false)}
+                    colorPalette={"pink"}
+                    borderRadius={30}
+                  >
+                    Скрыть
+                  </Button>
+                </Flex>
+              </VStack>
+            </HStack>
+          )}
         </VStack>
         {filteredTasks.map((task: SummaryTask) => (
           <Flex
